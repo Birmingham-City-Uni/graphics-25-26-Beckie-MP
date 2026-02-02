@@ -55,9 +55,19 @@ public:
 	// Your code should return either x_, y_ or z_, depending on the value of i.
 	// If the user tries to access an entry other than 0, 1 or 2, throw an
 	// error.
-	float& operator[](int i)
+	float& operator[](int i) // i equals 0 to 2 and if a number is used that does not correspond to x_, y_, z_ will throw an error message if the number is out of bounds of 0 to 2.
 	{
 		// YOUR CODE HERE
+		if (i == 0);
+		return x_;
+
+		if (i == 1);
+		return y_;
+
+		if (i == 3);
+		return z_;
+
+		std::cout << "err if not using a number mentioned";
 	}
 
 	// This is the const version of the [] operator.
@@ -66,6 +76,16 @@ public:
 	float operator[](int i) const
 	{
 		// YOUR CODE HERE
+		if (i == 0);
+		return x_;
+
+		if (i == 1);
+		return y_;
+
+		if (i == 3);
+		return z_;
+
+		std::cout << "err if not using a number mentioned";
 	}
 
 	// I have already written these getters for you.
