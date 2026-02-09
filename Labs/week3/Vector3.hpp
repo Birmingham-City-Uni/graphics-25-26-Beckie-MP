@@ -53,12 +53,24 @@ public:
 	{
 		// YOUR CODE HERE
 		// Implement the cross product, following the formula from the slides.
+
+		return Vector3(
+		
+			//x
+			y_ * other.z_ - z_ *other.y_,
+			//y
+			x_ * other.z_ - z_ *other.x_,
+			//z
+			x_ * other.y_ - y_ *other.x_ );
+
 	}
 
 	float dot(const Vector3& other) const
 	{
 		// YOUR CODE HERE
 		// Implement the dot product, following the formula from the slides.
+
+
 	}
 
 	float length() const
