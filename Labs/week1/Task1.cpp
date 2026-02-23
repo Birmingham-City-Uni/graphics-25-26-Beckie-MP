@@ -1,29 +1,54 @@
 #include <iostream>
 #include <lodepng.h>
 
+void setPixel(std::vector<uint8_t>& imageBuffer, int width, int nChannels,
+    int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    int pixelIdx = x + y * width;
+    int start = pixelIdx * nChannels;
+
+    imageBuffer[start + 0] = r;
+    imageBuffer[start + 1] = g;
+    imageBuffer[start + 2] = b;
+    imageBuffer[start + 3] = a;
+}
 
 int main()
 {
-	std::string outputFilename = "output.png";
+    std::string outputFilename = "output.png";
 
-	const int width = 1920, height = 1080;
-	const int nChannels = 4;
+    const int width = 1920, height = 1080;
+    const int nChannels = 4;
 
-	// Setting up an image buffer
-	// This std::vector has one 8-bit value for each pixel in each row and column of the image, and
-	// for each of the 4 channels (red, green, blue and alpha).
-	// Remember 8-bit unsigned values can range from 0 to 255.
-	std::vector<uint8_t> imageBuffer(height*width*nChannels);
+    std::vector<uint8_t> imageBuffer(height * width * nChannels);
 
-	// This for loop sets all the pixels of the image to a cyan colour. 
-	for(int y = 0; y < height; ++y) 
-		for (int x = 0; x < width; ++x) {
-			int pixelIdx = x + y * width;
-			imageBuffer[pixelIdx * nChannels + 0] = 0; // Set red pixel values to 0
-			imageBuffer[pixelIdx * nChannels + 1] = 255; // Set green pixel values to 255 (full brightness)
-			imageBuffer[pixelIdx * nChannels + 2] = 255; // Set blue pixel values to 255 (full brightness)
-			imageBuffer[pixelIdx * nChannels + 3] = 255; // Set alpha (transparency) pixel values to 255 (fully opaque)
-		}
+    // Task 1 background
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x)
+        {
+            int pixelIdx = x + y * width;
+
+            if (y >= height / 2)
+            {
+                imageBuffer[pixelIdx * nChannels + 0] = 0;
+                imageBuffer[pixelIdx * nChannels + 1] = 255;
+                imageBuffer[pixelIdx * nChannels + 2] = 255;
+                imageBuffer[pixelIdx * nChannels + 3] = 255;
+            }
+            else
+            {
+                imageBuffer[pixelIdx * nChannels + 0] = 0;
+                imageBuffer[pixelIdx * nChannels + 1] = 255;
+                imageBuffer[pixelIdx * nChannels + 2] = 0;
+                imageBuffer[pixelIdx * nChannels + 3] = 255;
+            }
+        }
+
+    // Task 2 test: draw a visible 50x50 red square using setPixel
+    for (int y = 0; y < 50; ++y)
+        for (int x = 0; x < 50; ++x)
+            setPixel(imageBuffer, width, nChannels, x, y, 255, 0, 0, 255);
+
 
 	/// *** Lab Tasks ***
 	// * Task 1: Try adapting the code above to set the lower half of the image to be a green colour.
