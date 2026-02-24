@@ -58,13 +58,13 @@ public:
 	float& operator[](int i) // i equals 0 to 2 and if a number is used that does not correspond to x_, y_, z_ will throw an error message if the number is out of bounds of 0 to 2.
 	{
 		// YOUR CODE HERE
-		if (i == 0);
+		if (i == 0)
 		return x_;
 
-		if (i == 1);
+		if (i == 1)
 		return y_;
 
-		if (i == 3);
+		if (i == 2)
 		return z_;
 
 		std::cout << "err if not using a number mentioned";

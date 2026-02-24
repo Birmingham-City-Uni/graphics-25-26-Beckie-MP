@@ -64,6 +64,21 @@ int main()
 	{
 		std::getline(bunnyFile, line);
 		// *** YOUR CODE HERE ***
+		std::stringstream ss(line);
+
+		std::string type;
+		ss >> type; // Reads first word
+
+		if (type == "v")
+		{
+			float x, y, z;
+			ss >> x >> y >> z;
+
+			Vector3 vertex(x, y, z);
+			vertices.push_back(vertex);
+
+			std::cout << vertex << std::endl;
+		}
 
 		// Process each line of the file
 		// Load it into a new Vector3, if the line starts with a V
@@ -71,7 +86,8 @@ int main()
 		// For debugging, maybe print out the vector too!
 	}
 
-	for (auto& v : vertices) {
+	for (auto& v : vertices)
+	{
 		// **** Task 3 ****
 		// Finally, let's draw the vertices!
 		// For each vertex, we need to call setPixel to draw a point to the screen.
@@ -83,6 +99,18 @@ int main()
 		//         big enough to see.
 
 		// *** YOUR CODE HERE ***
+		int screenX = static_cast<int>((v.x() * 200.0f) + width / 2);
+		int screenY = static_cast<int>((-v.y() * 200.0f) + height / 2);
+
+		if (screenX >= 0 && screenX < width && screenY >= 0 && screenY < height)
+		{
+			setPixel(imageBuffer, screenX, screenY, width, height, 255, 255, 255);
+		}
+
+		if (!bunnyFile.is_open())
+		{
+			std::cout << "File failed to open!" << std::endl;
+		}
 	}
 
 
