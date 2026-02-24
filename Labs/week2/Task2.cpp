@@ -20,34 +20,74 @@ void setPixel(std::vector<uint8_t>& image, int x, int y, int width, int height, 
 	image[pixelIdx * 4 + 3] = a;
 }
 
-void drawLine(std::vector<uint8_t>& image, int width, int height, int startX, int startY, int endX, int endY)
+void drawLine(std::vector<uint8_t>& image, int width, int height,
+	int startX, int startY, int endX, int endY)
 {
-	// Task 1: Bresenham's line algorithm
-	// *** YOUR CODE HERE
-	//Step 1: work out the gradient
-	float gradient;
+	// Task 1: Bresenham's line algorithm- this algorithm is just a way to draw a stright line between two dots (pixels)
+	// *** YOUR CODE HERE 
+	//Step 1: work out the gradient 
+	//float gradient;
+	int dx = endX - startX;
+	int dy = endY - startY;
 
-	// Step 2: check if it's steep (i.e. absolute value bigger than 1;)
-	bool steep;
+	// Step 2: check if it's steep (i.e. absolute value bigger than 1;) 
+	//If steep, swap x and y for both points
+	bool steep = abs(dy) > abs(dx);
 
-	if (steep) {
-		// Step 3: The steep version of the code, iterating over Y
+	if (steep)
+	{
+		// Swap x and y for both points
+		std::swap(startX, startY);
+		std::swap(endX, endY);
+	}
+
+	// Make sure we always draw from left to right
+	if (startX > endX)
+	{
+		std::swap(startX, endX);
+		std::swap(startY, endY);
+	}
+
+	// Recalculate differences after swapping
+	dx = endX - startX;
+	dy = abs(endY - startY);
+
+	int error = dx / 2;
+	int ystep = (startY < endY) ? 1 : -1;
+	int y = startY;
+
+	if (steep)
+	{
+		// Step 3: The steep version (iterating over Y)
 		// First, make sure that startY is less than endY. 
 		// If they're in the wrong order, swap both X and Y.
+		for (int x = startX; x <= endX; ++x)
+		{
+			setPixel(image, y, x, width, height, 255, 255, 255);
 
-		// Now, iterate from startY to endY. 
-		for (int y = startY; y <= endY; ++y) {
-			// Draw the line, following the formula!
+			error -= dy;
+			if (error < 0)
+			{
+				y += ystep;
+				error += dx;
+			}
 		}
 	}
-	else {
-		// Step 4: The shallow version of the code, iterating over X
+	else
+	{
+		// Step 4: The shallow version (iterating over X)
 		// First, make sure that startx is less than endX. 
 		// If they're in the wrong order, swap both X and Y.
+		for (int x = startX; x <= endX; ++x)
+		{
+			setPixel(image, x, y, width, height, 255, 255, 255);
 
-		// Now, iterate from startY to endY. 
-		for (int x = startX; x <= endX; ++x) {
-			// Draw the line, following the formula!
+			error -= dy;
+			if (error < 0)
+			{
+				y += ystep;
+				error += dx;
+			}
 		}
 	}
 }
