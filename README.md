@@ -39,3 +39,8 @@ Your submitted coursework code should be contained in the `Coursework` directory
 * `Coursework/Pathtracer`: Blender file (.blend format) containing your path-traced scene. I recommend leaving this outside the repo until you are ready, to avoid saving multiple versions of this large binary file.
 
 I must be able to compile and run your code on the lab machines. I recommend building on the starter code and using CMake, but use of Visual Studio is acceptable (if you do, make sure you're using relative directories, i.e. `$(SolutionDir)` when setting up include directories so it will compile on other computers).
+
+References:
+Authour: M and animator. Publish: 2017. Accessed on 08/03/2026
+https://sketchfab.com/3d-models/street-lamp-ba2f00e22dc14690abe8b49bc2b8110c
+
