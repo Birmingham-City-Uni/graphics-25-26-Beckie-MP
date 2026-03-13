@@ -23,32 +23,23 @@ void setPixel(std::vector<uint8_t>& image, int x, int y, int width, int height, 
 void drawLine(std::vector<uint8_t>& image, int width, int height,
 	int startX, int startY, int endX, int endY)
 {
-	// Task 1: Bresenham's line algorithm- this algorithm is just a way to draw a stright line between two dots (pixels)
-	// *** YOUR CODE HERE 
-	//Step 1: work out the gradient 
-	//float gradient;
 	int dx = endX - startX;
 	int dy = endY - startY;
 
-	// Step 2: check if it's steep (i.e. absolute value bigger than 1;) 
-	//If steep, swap x and y for both points
 	bool steep = abs(dy) > abs(dx);
 
 	if (steep)
 	{
-		// Swap x and y for both points
 		std::swap(startX, startY);
 		std::swap(endX, endY);
 	}
 
-	// Make sure we always draw from left to right
 	if (startX > endX)
 	{
 		std::swap(startX, endX);
 		std::swap(startY, endY);
 	}
 
-	// Recalculate differences after swapping
 	dx = endX - startX;
 	dy = abs(endY - startY);
 
@@ -58,9 +49,6 @@ void drawLine(std::vector<uint8_t>& image, int width, int height,
 
 	if (steep)
 	{
-		// Step 3: The steep version (iterating over Y)
-		// First, make sure that startY is less than endY. 
-		// If they're in the wrong order, swap both X and Y.
 		for (int x = startX; x <= endX; ++x)
 		{
 			setPixel(image, y, x, width, height, 255, 255, 255);
@@ -75,9 +63,6 @@ void drawLine(std::vector<uint8_t>& image, int width, int height,
 	}
 	else
 	{
-		// Step 4: The shallow version (iterating over X)
-		// First, make sure that startx is less than endX. 
-		// If they're in the wrong order, swap both X and Y.
 		for (int x = startX; x <= endX; ++x)
 		{
 			setPixel(image, x, y, width, height, 255, 255, 255);
@@ -99,69 +84,79 @@ int main()
 	const int width = 512, height = 512;
 	const int nChannels = 4;
 
-	// Setting up an image buffer
-	// This std::vector has one 8-bit value for each pixel in each row and column of the image, and
-	// for each of the 4 channels (red, green, blue and alpha).
-	// Remember 8-bit unsigned values can range from 0 to 255.
-	std::vector<uint8_t> imageBuffer(height*width*nChannels);
+	std::vector<uint8_t> imageBuffer(height * width * nChannels);
 
-	// This line sets the memory block occupied by the image to all zeros.
 	memset(&imageBuffer[0], 0, width * height * nChannels * sizeof(uint8_t));
 
 	std::string bunnyFilename = "../models/stanford_bunny_simplified.obj";
 
 	std::ifstream bunnyFile(bunnyFilename);
 
-
-	// *** Task 2 ***
-	// Your next task is to load all the vertices from the OBJ file.
-	// I've given you some starter code here that reads through each line of the
-	// OBJ file and makes it into a stringstream.
-	// For these V lines, you should load the X, Y and Z coordinates into a new vector
-	// and push it back into your array of vertices.
 	std::vector<Vector3> vertices;
 	std::vector<std::vector<unsigned int>> faces;
+
 	std::string line;
+
 	while (!bunnyFile.eof())
 	{
 		std::getline(bunnyFile, line);
 		std::stringstream lineSS(line.c_str());
+
 		char lineStart;
 		lineSS >> lineStart;
+
 		char ignoreChar;
-		if (lineStart == 'v') {
+
+		if (lineStart == 'v')
+		{
 			Vector3 v;
-			for (int i = 0; i < 3; ++i) lineSS >> v[i];
+			for (int i = 0; i < 3; ++i)
+				lineSS >> v[i];
+
 			vertices.push_back(v);
 		}
 
-
-
-		if (lineStart == 'f') {
-
+		if (lineStart == 'f')
+		{
 			std::vector<unsigned int> face;
-			// *** YOUR CODE HERE ***
-			// This time we care about faces!
-			// Load this face from the line, pushing it back into the list of faces.
-			// Be careful to ignore the "/" characters, and the extra texture and normal indices.
+
+			for (int i = 0; i < 3; i++)
+			{
+				unsigned int vertexIndex;
+				lineSS >> vertexIndex;
+
+				face.push_back(vertexIndex - 1);
+			}
+
+			faces.push_back(face);
 		}
 	}
 
-	for (int f = 0; f < faces.size(); ++f) {
-		// **** Task 3 ****
-		// Finally, let's draw the faces!
+	for (int f = 0; f < faces.size(); ++f)
+	{
+		Vector3 v0 = vertices[faces[f][0]];
+		Vector3 v1 = vertices[faces[f][1]];
+		Vector3 v2 = vertices[faces[f][2]];
 
-		// First, load the vertices, and resize them like we did in Task1.cpp
-		// Then, call DrawLine three times, to draw each side of the triangle!
+		int x0 = (v0[0] + 1) * width / 2;
+		int y0 = (v0[1] + 1) * height / 2;
+
+		int x1 = (v1[0] + 1) * width / 2;
+		int y1 = (v1[1] + 1) * height / 2;
+
+		int x2 = (v2[0] + 1) * width / 2;
+		int y2 = (v2[1] + 1) * height / 2;
+
+		drawLine(imageBuffer, width, height, x0, y0, x1, y1);
+		drawLine(imageBuffer, width, height, x1, y1, x2, y2);
+		drawLine(imageBuffer, width, height, x2, y2, x0, y0);
 	}
 
-	// *** Encoding image data ***
-	// PNG files are compressed to save storage space. 
-	// The lodepng::encode function applies this compression to the image buffer and saves the result 
-	// to the filename given.
 	int errorCode;
 	errorCode = lodepng::encode(outputFilename, imageBuffer, width, height);
-	if (errorCode) { // check the error code, in case an error occurred.
+
+	if (errorCode)
+	{
 		std::cout << "lodepng error encoding image: " << lodepng_error_text(errorCode) << std::endl;
 		return errorCode;
 	}
