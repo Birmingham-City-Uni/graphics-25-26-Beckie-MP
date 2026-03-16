@@ -69,7 +69,9 @@ public:
 	{
 		// YOUR CODE HERE
 		// Implement the dot product, following the formula from the slides.
-
+		
+		
+		return x_ * other.x_ + y_ * other.y_ + z_ * other.z_;
 
 	}
 
