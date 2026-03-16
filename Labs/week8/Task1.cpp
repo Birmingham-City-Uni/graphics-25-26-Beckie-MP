@@ -122,11 +122,11 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 					// Subtask 3: Work out correct inputs for the phongSpecularTerm function inside drawTriangle, and draw an image!
 					// *** YOUR CODE HERE ***
 					// Work out the incoming light dir (from the light into the surface point).
-					Eigen::Vector3f incomingLightDir = Eigen::Vector3f::Zero();
+					Eigen::Vector3f incomingLightDir = light.get()->getDirection(worldP);
 					// Work out the view direction (from surface point towards camera). Make sure it's normalized!
-					Eigen::Vector3f viewDir = Eigen::Vector3f::Zero();
+					Eigen::Vector3f viewDir = (camWorldPos - worldP).normalized();
 					// Find the specular term by calling phongSpecularTerm.
-					float specularTerm = 0.f;
+					float specularTerm = phongSpecularTerm(incomingLightDir, normP, viewDir, specularExponent);
 					// *** END YOUR CODE ***
 
 					Eigen::Vector3f specularOut = specularColor * specularTerm;
@@ -278,14 +278,14 @@ int main()
 	Eigen::Matrix4f bunnyTransform; 
 	bunnyTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
 	// .... and change the specular exponent here!
-	drawMesh(imageBuffer, zBuffer, bunnyMesh, Eigen::Vector3f(0.f, 0.5f, 0.8f), 
-		Eigen::Vector3f::Ones()*1.0f, 10.f, camWorldPos,
+	drawMesh(imageBuffer, zBuffer, bunnyMesh, Eigen::Vector3f(10.f, 0.5f, 20.8f), 
+		Eigen::Vector3f::Ones()*1.0f, 90.f, camWorldPos,
 		bunnyTransform, worldToClip, lights, width, height);
 
 	Eigen::Matrix4f planeTransform; 
 	planeTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.f)) * scaleMatrix(1.4f);
 	drawMesh(imageBuffer, zBuffer, planeMesh, Eigen::Vector3f(0.f, 0.5f, 0.8f), 
-		Eigen::Vector3f::Ones()*1.0f, 10.f, camWorldPos,
+		Eigen::Vector3f::Ones()*1.0f, 50.f, camWorldPos,
 		planeTransform, worldToClip, lights, width, height);
 
 	// For debug - draw point lights as colored circles so we can see where they are
