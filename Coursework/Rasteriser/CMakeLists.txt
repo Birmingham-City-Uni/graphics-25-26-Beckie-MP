@@ -5,8 +5,13 @@ project(rasteriser)
 add_subdirectory(3rdParty)
 
 include_directories(3rdParty/lodepng)
+include_directories(../../3rdParty/eigen-3.4.0)
 
 add_executable(rasteriser
+    Image.hpp
+    Light.hpp
+    LinAlg.hpp
+    Mesh.hpp
     rasteriser.cpp)
 
 

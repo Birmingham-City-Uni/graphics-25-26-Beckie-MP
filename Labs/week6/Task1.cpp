@@ -43,7 +43,7 @@ Eigen::Matrix4f projectionMatrix(int height, int width, float horzFov = 70.f * M
 	projection(1, 1) = 1.0f / tan(0.5 * vertFov);
 	projection(2, 2) = zFar / (zFar - zNear);
 	projection(2, 3) = (-zFar * zNear) / (zFar - zNear);
-	projection(3, 2) = -1.0f;
+	projection(3, 2) = 1.0f;
 
 	return projection;
 	// *** END YOUR CODE ***
@@ -158,8 +158,8 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			// the modulo (%) operator to wrap around, or clamping to the edges.
 			// Write your own code below to do this - once you're done you should be sure 
 			// that 0 <= texC < texWidth and 0 <= texR < texHeight.
-			texR = std::max(0, std::min(texR, texHeight - 1));
-			texC = std::max(0, std::min(texR, texHeight - 1));
+			texR = texR % texHeight;
+			texC = texC % texWidth;
 
 			// Get the value from the texture (hint: use the getPixel function on the albedoTexture).
 			Color texColor = getPixel(albedoTexture, texC, texR, texWidth, texHeight);
@@ -286,19 +286,19 @@ void drawMesh(std::vector<unsigned char>& image,
 
 		t.screen[0] = Eigen::Vector3f(
 			width * (vClip0.x() + 1.f) / 2.f,
-			height * (vClip0.y() + 1.f) / 2.f,
+			height * (-vClip0.y() + 1.f) / 2.f,
 			vClip0.z()
 		);
 
 		t.screen[1] = Eigen::Vector3f(
 			width * (vClip1.x() + 1.f) / 2.f,
-			height * (vClip1.y() + 1.f) / 2.f,
+			height * (-vClip1.y() + 1.f) / 2.f,
 			vClip1.z()
 		);
 
 		t.screen[2] = Eigen::Vector3f(
 			width * (vClip2.x() + 1.f) / 2.f,
-			height *(vClip2.y() + 1.f) / 2.f,
+			height *(-vClip2.y() + 1.f) / 2.f,
 			vClip2.z()
 		);
 		// *** END YOUR CODE ***
