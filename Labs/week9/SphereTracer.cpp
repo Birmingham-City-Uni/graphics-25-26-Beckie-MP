@@ -79,12 +79,35 @@ bool raySphereIntersection(const Ray& ray, const Sphere& sphere, Vector3f& inter
 
 	// Steps:
 	// 1. Find the value of A, B and C from the lecture slides.
+	float A = 1;
+	Vector3f v = ray.direction - sphere.centre;
+	float B = 2 * (v.dot(intersection));
+	float C = (v.length * v.length) - (sphere.radius * sphere.radius);
+		
 	// 2. Find the value of the discriminant B^2 - 4AC
+	float dis = (B * B) - 4 * A *C;
+
 	// 3. If the discriminant is less than 0, return false (no solutions).
+	
+	if (dis < 0)
+	{
+		return false;
+	}
 	// 4. Otherwise, find the two solutions for t (t1 and t2, for example).
+	t = sqrtf(dis) / (2 * A);
+	float t1 = -B + t;
+	float t2 = -B - t;
+
 	// 5. Find the smallest solution for t that's bigger than minT.
 	//   a. If such a t exists, set the value of "intersection" and "t" and return true.
 	//   b. If no such t exists, return false.
+
+	if (t1 < minT)
+	{
+		return true;
+
+
+	}
 
 	// Remove this existing code, that just always returns false.
 	return false;
