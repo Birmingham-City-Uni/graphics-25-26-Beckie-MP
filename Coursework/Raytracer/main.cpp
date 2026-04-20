@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 	// *** Load shaders and textures ***
 	std::vector<uint8_t> spotTexture;
 	unsigned int width, height;
-	lodepng::decode(spotTexture, width, height, "../models/spot.png");
+	lodepng::decode(spotTexture, width, height, "../../Rasteriser/Models/RPD_Texture.png");
 
 	LambertianShader redLambertianShader(red);
 	PhongShader bluePlasticShader(blue, Eigen::Vector3f(1.f, 1.f, 1.f), 100.f);
@@ -81,8 +81,8 @@ int main(int argc, char* argv[]) {
 
 	// Optional code: here's how to add the spot mesh to the scene, using a BVH
 	// Try enabling this and comparing it to the non-BVH version below!
-	Model spotModel("../models/spot.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(spotModel, &spotShader, 4, rotateY(M_PI / 4.0f)));
+	Model spotModel("../../Rasteriser/Models/RPD.Scene.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(spotModel, &spotShader, 8, rotateY(M_PI)));
 
 	// Here's how to add the mesh without using the BVH.
 	// Try comparing performance to the BVH version above.

@@ -1,12 +1,12 @@
 {
-    "pixWidth": 1920,
-    "pixHeight": 1080,
+    "pixWidth": 192,
+    "pixHeight": 108,
 
     "maxBounces": 5,
 
     "clearColor": [0,0,0,255],
 
-    "cameraPos": [0.0, 0.0, -5],
+    "cameraPos": [0.0, 5.0, -100],
     "cameraForward": [0.0, 0.0, 1.0],
     "cameraUp": [0.0, 1.0, 0.0],
 
