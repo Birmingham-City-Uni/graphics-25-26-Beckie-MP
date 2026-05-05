@@ -21,8 +21,8 @@ public:
 		:location_(location)
 	{
 		Eigen::Vector3f forwardVec = forward.normalized();
-		Eigen::Vector3f rightVec = (up.cross(forwardVec)).normalized();
-		Eigen::Vector3f upVec = (forward.cross(rightVec)).normalized();
+		Eigen::Vector3f rightVec = -(up.cross(forwardVec)).normalized();
+		Eigen::Vector3f upVec = -(forward.cross(rightVec)).normalized();
 
 		float aspect = static_cast<float>(pixWidth) / static_cast<float>(pixHeight);
 

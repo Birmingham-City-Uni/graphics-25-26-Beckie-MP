@@ -18,6 +18,7 @@
 #include "TexCoordTestShader.hpp"
 #include "Model.hpp"
 #include <fstream>
+#include "EmissiveShader.hpp"
 
 /// <summary>
 /// Load a JSON config file using the nlohmann library.
@@ -75,6 +76,7 @@ int main(int argc, char* argv[]) {
 	TexturedLambertianShader spotShader(&spotTexture, width, height);
 	MirrorShader mirrorShader;
 	TexCoordTestShader texCoordTestShader;
+	EmissiveShader signShader(red);
 
 	// *** Set up scene ***
 	Scene scene;
@@ -83,6 +85,9 @@ int main(int argc, char* argv[]) {
 	// Try enabling this and comparing it to the non-BVH version below!
 	Model spotModel("../../Rasteriser/Models/RPD.Scene.obj");
 	scene.renderables.push_back(std::make_shared<BVHNode>(spotModel, &spotShader, 8, rotateY(M_PI)));
+	//RPD sign
+	Model signModel("../../Raytracer/models/RPD_Signobj.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(signModel, &signShader, 8, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, -0.1f)) * rotateY(M_PI)));
 
 	// Here's how to add the mesh without using the BVH.
 	// Try comparing performance to the BVH version above.
@@ -91,12 +96,13 @@ int main(int argc, char* argv[]) {
 	//scene.renderables.back()->modelToWorld(rotateY(M_PI / 4.0f));
 
 	// *** Add lights to scene ***
-	Eigen::Vector3f ambientLight(.1f, .1f, .1f);
+	Eigen::Vector3f ambientLight(.3f, .3f, .3f);
 
 	std::vector<std::unique_ptr<Light>> lightSources;
-	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-1.f, 3.f, -1.f), 3.f * Eigen::Vector3f(1.f, 1.f, 1.f)));
-	lightSources.push_back(std::make_unique<DirectionalLight>(Eigen::Vector3f(0.f, -1.f, 1.f), .5f * Eigen::Vector3f(1.f, 1.f, 1.f)));
-
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-17.0f, 2.0f, -42.0f), 15.0f * Eigen::Vector3f(1.f, 1.f, 1.f)));
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(10.0f, 2.0f, -42.0f), 15.0f * Eigen::Vector3f(1.0f, 1.0f, 1.0f)));
+	//Door point light
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-5.0f, 4.0f, -20.0f), 40.0f * Eigen::Vector3f(1.1f, 1.0f, 1.0f)));
 	// *** Render the scene ***
 
 	// Shuffling the scanline order gets better CPU usage between threads
