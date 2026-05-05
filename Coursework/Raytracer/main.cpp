@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
 	scene.renderables.push_back(std::make_shared<BVHNode>(spotModel, &spotShader, 8, rotateY(M_PI)));
 	//RPD sign
 	Model signModel("../../Raytracer/models/RPD_Signobj.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(signModel, &signShader, 8, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, -0.1f)) * rotateY(M_PI)));
+	scene.renderables.push_back(std::make_shared<BVHNode>(signModel, &signShader, 8, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, -0.3f)) * rotateY(M_PI)));
 
 	// Here's how to add the mesh without using the BVH.
 	// Try comparing performance to the BVH version above.
