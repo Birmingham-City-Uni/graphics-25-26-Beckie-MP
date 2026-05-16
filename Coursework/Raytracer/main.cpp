@@ -76,7 +76,8 @@ int main(int argc, char* argv[]) {
 	TexturedLambertianShader spotShader(&spotTexture, width, height);
 	MirrorShader mirrorShader;
 	TexCoordTestShader texCoordTestShader;
-	EmissiveShader signShader(red);
+	EmissiveShader signShader(Eigen::Vector3f(6.5f, 0.f, 0.f));
+	/*EmissiveShader signShader(red);*/
 
 	// *** Set up scene ***
 	Scene scene;
@@ -96,13 +97,16 @@ int main(int argc, char* argv[]) {
 	//scene.renderables.back()->modelToWorld(rotateY(M_PI / 4.0f));
 
 	// *** Add lights to scene ***
-	Eigen::Vector3f ambientLight(.3f, .3f, .3f);
+	Eigen::Vector3f ambientLight(.14f, .18f, .2f);
 
 	std::vector<std::unique_ptr<Light>> lightSources;
-	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-17.0f, 2.0f, -42.0f), 15.0f * Eigen::Vector3f(1.f, 1.f, 1.f)));
-	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(10.0f, 2.0f, -42.0f), 15.0f * Eigen::Vector3f(1.0f, 1.0f, 1.0f)));
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-17.0f, 2.0f, -42.0f), 20.0f * Eigen::Vector3f(0.85f, 0.95f, 1.0f)));
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(10.0f, 2.0f, -42.0f), 20.0f * Eigen::Vector3f(0.7f, 0.85f, 1.0f)));
 	//Door point light
-	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-5.0f, 4.0f, -20.0f), 40.0f * Eigen::Vector3f(1.1f, 1.0f, 1.0f)));
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-5.0f, 5.0f, -24.0f), 80.0f * Eigen::Vector3f(1.0f, 0.9f, 0.75f)));
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(0.0f, 15.0f, -35.0f),15.0f * Eigen::Vector3f(0.1f, 0.35f, 0.45f)));
+	// Interior doorway fill light
+	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(2.0f, 3.0f, -16.0f),50.0f * Eigen::Vector3f(1.0f, 0.85f, 0.7f)));
 	// *** Render the scene ***
 
 	// Shuffling the scanline order gets better CPU usage between threads
@@ -134,6 +138,11 @@ int main(int argc, char* argv[]) {
 					hitInfo, &scene,
 					lightSources, ambientLight,
 					0, config["maxBounces"]);
+				//Create fog to enhance atmosphere depth
+				float fog = std::exp(-0.0055f * hitInfo.hitT);
+				Eigen::Vector3f fogColor(0.02f, 0.16f, 0.18f);
+				color = color * fog + fogColor * (1.0f - fog);
+				color = color.cwiseProduct(Eigen::Vector3f(1.25f, 1.25f, 1.25f));// small exposure boost
 
 				color.x() = std::min(color.x(), 1.f);
 				color.y() = std::min(color.y(), 1.f);
@@ -147,10 +156,12 @@ int main(int argc, char* argv[]) {
 				outImage[(x + line * pixWidth) * nChannels + 3] = 255;
 			}
 			else {
+
+				Eigen::Vector3f skyColor(0.01f, 0.05f, 0.06f);
 				int line = (pixHeight - scanlines[y]) - 1;
-				outImage[(x + line * pixWidth) * nChannels + 0] = 0;
-				outImage[(x + line * pixWidth) * nChannels + 1] = 0;
-				outImage[(x + line * pixWidth) * nChannels + 2] = 0;
+				outImage[(x + line * pixWidth) * nChannels + 0] = skyColor.x() * 255;
+				outImage[(x + line * pixWidth) * nChannels + 1] = skyColor.y() * 255;
+				outImage[(x + line * pixWidth) * nChannels + 2] = skyColor.z() * 255;
 				outImage[(x + line * pixWidth) * nChannels + 3] = 255;
 			}
 		}
