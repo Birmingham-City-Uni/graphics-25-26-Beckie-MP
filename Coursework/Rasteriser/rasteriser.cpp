@@ -212,6 +212,16 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 
 				// Now add the intensity times the albedo.
 				color += coeffWiseMultiply(lightIntensity, albedo);
+				//Fog
+				float fogDensity = 0.045f;
+				float fogAmount = std::min(depth * fogDensity, 1.0f);
+				Eigen::Vector3f fogColor(0.01f, 0.08f, 0.1f);
+				color = color * (1.0f - fogAmount) + fogColor * fogAmount;
+			}
+			//wet ground
+			if (y > height * 0.65f)
+			{
+				color *= 1.25f;
 			}
 
 			Color c;
@@ -357,7 +367,7 @@ int main()
 
 	// This matrix rotates the camera, tilting it down, then translates it up to make it look down on the scene.
 	// Once your code is working, try changing this to move the camera around!
-	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(-0.3f, -0.5f, 0.f)) * rotateXMatrix(0.2f);
+	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(-0.3f, -0.5f, 0.f)) * rotateXMatrix(0.08f);
 
 	// The main important task = set up the worldToCamera and worldToClip matrices here!
 	// Set up worldToCamera, based on cameraToWorld above
@@ -367,15 +377,19 @@ int main()
 
 	// *** END YOUR CODE ***
 
-	std::string RPD_Filename = "../Models/RPD.Scene.obj";
+	std::string RPD_Filename = "../Models/RPD.Scene.V2.obj";
 
 	std::vector<std::unique_ptr<Light>> lights;
 	// I've already added an ambient light for you!
-	lights.emplace_back(new AmbientLight(Eigen::Vector3f(0.1f, 0.1f, 0.1f)));
+	lights.emplace_back(new AmbientLight(Eigen::Vector3f(0.01f, 0.04f, 0.06f)));
 
 	//lights.emplace_back(new PointLight(Eigen::Vector3f(1.1f, 1.1f, 1.1f), Eigen::Vector3f(0.f, 1.0f, 0.f)));
-	lights.emplace_back(new DirectionalLight(Eigen::Vector3f(0.4f, 0.4f, 0.4f), Eigen::Vector3f(1.f, 0.f, 0.0f)));
+	lights.emplace_back(new DirectionalLight(Eigen::Vector3f(0.06f, 0.08f, 0.1f), Eigen::Vector3f(0.3f, -1.f, -0.4f)));
 	//lights.emplace_back(new SpotLight(Eigen::Vector3f(10.0f, 0.0f, 0.0f), Eigen::Vector3f(0.f, 1.f, 0.0f), Eigen::Vector3f(0, -1, 0), M_PI/8));
+	lights.emplace_back(new PointLight(Eigen::Vector3f(12.0f, 12.0f, 12.0f), Eigen::Vector3f(0.0f, -0.2f, 3.8f)));
+	//Red Glow
+	lights.emplace_back(new PointLight(Eigen::Vector3f(3.5f, 0.15f, 0.15f), Eigen::Vector3f(0.0f, 2.3f, 3.2f)
+	));
 
 	Mesh RPDMesh = loadMeshFile(RPD_Filename);
 
@@ -400,7 +414,7 @@ int main()
 	//drawMesh(imageBuffer, zBuffer, RPDMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
 
 	// For debug - draw point lights as colored circles so we can see where they are
-	drawPointLights(imageBuffer, width, height, lights);
+	/*drawPointLights(imageBuffer, width, height, lights);*/
 
 	// Save the image to png.
 	int errorCode;
